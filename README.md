@@ -16,4 +16,4 @@ http://localhost:3000/api/auth/callback/google   -> for local
 
 for production after deployment you will the get the hosted url add that.
 
-Done till 1:51 
+Done till 2:48 
