@@ -3,6 +3,7 @@ import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useSession } from "next-auth/react";
 import React, { FormEvent, useState } from "react";
+import toast from "react-hot-toast";
 import { db } from "../firebase";
 type Props = {
   chatId: string;
@@ -14,9 +15,8 @@ function ChatInput({ chatId }: Props) {
   //useSWR to get model;
   const model = "text-davinci-003";
 
-  const sendMessage = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const sendMessage = async (e: FormEvent<HTMLFormElement>) => {   
+    e.preventDefault();  
     if (!prompt) return;
     const input = prompt.trim();
     setPrompt("");
@@ -40,10 +40,12 @@ function ChatInput({ chatId }: Props) {
         session?.user?.email!,
         "chats",
         chatId,
-        "message"
+        "messages"
       ),
       message
     );
+
+    const notification = toast.loading('ChatGPT is thinking...')
 
     // Toast notificcation
     await fetch("/api/askQuestion", {
@@ -58,12 +60,12 @@ function ChatInput({ chatId }: Props) {
         session,
       }),
     }).then(() => {
-      // Success toast
+      toast.success('ChatGPT has responded',{id:notification})
     });
   };
   return (
     <div className="bg-gray-700/50 text-gray-400 rounded-lg text-sm">
-      <form onSubmit={(e) => sendMessage} className="p-5 space-x-5 flex">
+      <form onSubmit={(e) => sendMessage(e)} className="p-5 space-x-5 flex">
         <input
           className="bg-transparent focus:outline-none flex-1 disabled:cursor-not-allowed disabled:text-gray-300"
           disabled={!session}
