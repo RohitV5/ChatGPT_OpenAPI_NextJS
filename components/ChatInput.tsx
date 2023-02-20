@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import React, { FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { db } from "../firebase";
+import ModelSelection from "./ModelSelection";
 type Props = {
   chatId: string;
 };
@@ -15,8 +16,8 @@ function ChatInput({ chatId }: Props) {
   //useSWR to get model;
   const model = "text-davinci-003";
 
-  const sendMessage = async (e: FormEvent<HTMLFormElement>) => {   
-    e.preventDefault();  
+  const sendMessage = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (!prompt) return;
     const input = prompt.trim();
     setPrompt("");
@@ -45,7 +46,7 @@ function ChatInput({ chatId }: Props) {
       message
     );
 
-    const notification = toast.loading('ChatGPT is thinking...')
+    const notification = toast.loading("ChatGPT is thinking...");
 
     // Toast notificcation
     await fetch("/api/askQuestion", {
@@ -60,7 +61,7 @@ function ChatInput({ chatId }: Props) {
         session,
       }),
     }).then(() => {
-      toast.success('ChatGPT has responded',{id:notification})
+      toast.success("ChatGPT has responded", { id: notification });
     });
   };
   return (
@@ -83,7 +84,9 @@ function ChatInput({ chatId }: Props) {
         </button>
       </form>
 
-      <div>{/* ModelSelection */}</div>
+      <div className="md:hidden">
+        <ModelSelection />
+      </div>
     </div>
   );
 }
